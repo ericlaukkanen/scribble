@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" charset="utf-8">
+<head>
+    <title>scribble</title>
+</head>
+<body>
+  <canvas id="myCanvas" width ="500" height="500"</canvas>
+  	<script>
+  	    var canvas = document.getElementById('myCanvas');
+      	var context = canvas.getContext('2d');
+
+        context.globalAlpha = 0.5;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      	context.beginPath();
+     	context.arc(320, 120, 60, 0, 2 * Math.PI, false);
+      	context.fillStyle = 'red';
+      	context.fill();
+    </script>
+</body>
+</html>
