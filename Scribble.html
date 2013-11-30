@@ -1,20 +1,108 @@
 <!doctype html>
 <html lang="en" charset="utf-8">
 <head>
-    <title>scribble</title>
+    <title>Scribbler</title>
 </head>
 <body>
-  <canvas id="myCanvas" width ="500" height="500"</canvas>
-  	<script>
-  	    var canvas = document.getElementById('myCanvas');
-      	var context = canvas.getContext('2d');
+	<canvas id="myCanvas" width="600" height="600"></canvas>
+	<script>
+	var canvas1 = document.getElementById('myCanvas');
+var context = canvas1.getContext('2d');
+var yZero = canvas1.height / 2; //center of shape (shifted origin)
+var xZero = canvas1.width / 2; //center of shape
+var size = 20; //height of diamond shape from shifted origin
+var bottom = yZero + size; //corners of diamond
+var top = yZero - size;
+var left = xZero - size;
+var right = xZero + size;
+var mx = new Array();
+var my = new Array();
+var dx = 0;
+var dy = 0;
+var xPos = new Array(); //array for x coordinates
+var yPos = new Array(); //array for y coordinates
+var speed = 0;
+setInterval(update, 2); //call update every 50ms
 
-        context.globalAlpha = 0.5;
-        context.clearRect(0, 0, canvas.width, canvas.height);
-      	context.beginPath();
-     	context.arc(320, 120, 60, 0, 2 * Math.PI, false);
-      	context.fillStyle = 'red';
-      	context.fill();
-    </script>
-</body>
-</html>
+//gets mouse coordinates, updates mx and my.
+canvas1.addEventListener('mousemove', function (evt) {
+    var mousePos = getMousePos(canvas1, evt);
+    //keep track of most recent two mouse coordinates
+    mx.unshift(mousePos.x);
+    my.unshift(mousePos.y);
+    if (mx.length > 2) mx.pop();
+    if (my.length > 2) my.pop();
+    //calculate change in position to determine speed of mouse
+    dx = mx[0] - mx[1];
+    dy = my[0] - my[1];
+
+}, false);
+
+//gets mouse coordinates, returns them
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+//draws lines connecting (x_i,y_i) and (x_i+1,y_i+1) with an x array and y array
+function drawArray(xArray, yArray) {
+    context.clearRect(0, 0, canvas1.width, canvas1.height);
+    context.beginPath();
+    //context.moveTo(xZero,top);
+    //context.lineTo(right,yZero);
+    //context.lineTo(xZero,bottom);
+    //context.lineTo(left,yZero);
+    //context.lineTo(xZero,top);
+    context.moveTo(xArray[0], yArray[0]);
+    for (var i = 0; i < xArray.length; i++) {
+        context.lineTo(xArray[i], yArray[i]);
+    }
+    context.stroke();
+}
+
+//pass an array and a number and it puts number at front of array, pops last entry if greater than whatever number is in 'if' statement
+function updateArray(array, coord) {
+    array.unshift(coord);
+    if (array.length > 42) {
+        array.pop();
+    };
+}
+
+//main loop
+function update() {
+    speed = 4 * Math.sqrt(dx * dx + dy * dy);
+    if (isNaN(speed)) speed = 0;
+    size = 20 + speed;
+    xZero = mx[0];
+    yZero = my[0];
+    var x = Math.random() * 2 * size + (xZero - size);
+    //var y;
+    var upDownToggle = Math.random();
+    if (upDownToggle > 0.5) {
+        if (x > xZero) {
+            //top right
+            var y = x - xZero + yZero - size;
+        }
+        if (x < xZero) {
+            //top left
+            var y = -x + xZero + yZero - size;
+        }
+    }
+    if (upDownToggle < 0.5) {
+        if (x > xZero) {
+            //bottom right
+            var y = -x + xZero + yZero + size;
+        }
+        if (x < xZero) {
+            //bottom left
+            var y = x - xZero + yZero + size;
+        }
+    }
+    updateArray(xPos, x);
+    updateArray(yPos, y);
+    drawArray(xPos, yPos);
+}
+	</script>
