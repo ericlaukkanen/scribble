@@ -4,21 +4,21 @@
     <title>Scribbler</title>
 </head>
 <body>
-	<canvas id="myCanvas" width="600" height="600"></canvas>
+	<canvas id="myCanvas" width="1400" height="800"></canvas>
 	<script>
 	var canvas1 = document.getElementById('myCanvas');
 var context = canvas1.getContext('2d');
 var yZero = canvas1.height / 2; //center of shape (shifted origin)
 var xZero = canvas1.width / 2; //center of shape
 var size = 20; //height of diamond shape from shifted origin
-var bottom = yZero + size; //corners of diamond
-var top = yZero - size;
-var left = xZero - size;
-var right = xZero + size;
+//var bottom = yZero + size; //corners of diamond
+//var top = yZero - size;
+//var left = xZero - size;
+//var right = xZero + size;
 var mx = new Array();
 var my = new Array();
-var dx = 0;
-var dy = 0;
+var dx = 0; //keeps track of change in mouse x
+var dy = 0;// keeps track of change in mouse y
 var xPos = new Array(); //array for x coordinates
 var yPos = new Array(); //array for y coordinates
 var speed = 0;
@@ -51,12 +51,13 @@ function getMousePos(canvas, evt) {
 function drawArray(xArray, yArray) {
     context.clearRect(0, 0, canvas1.width, canvas1.height);
     context.beginPath();
+    //drew the outline of the diamond before the diamond move with the mouse
     //context.moveTo(xZero,top);
     //context.lineTo(right,yZero);
     //context.lineTo(xZero,bottom);
     //context.lineTo(left,yZero);
     //context.lineTo(xZero,top);
-    context.moveTo(xArray[0], yArray[0]);
+    context.moveTo(xArray[0], yArray[0]); //start at beginning of array
     for (var i = 0; i < xArray.length; i++) {
         context.lineTo(xArray[i], yArray[i]);
     }
@@ -80,7 +81,9 @@ function update() {
     yZero = my[0];
     var x = Math.random() * 2 * size + (xZero - size);
     //var y;
-    var upDownToggle = Math.random();
+    //upDownToggle is switch between top and bottom boundary lines
+    var upDownToggle = Math.random(); 
+    //use upper line equations
     if (upDownToggle > 0.5) {
         if (x > xZero) {
             //top right
@@ -91,6 +94,7 @@ function update() {
             var y = -x + xZero + yZero - size;
         }
     }
+    //use lower line equations
     if (upDownToggle < 0.5) {
         if (x > xZero) {
             //bottom right
